@@ -332,17 +332,11 @@ The AI does **not**:
 
 # 📸 Screenshots
 
-Add screenshots here.
+![Login Page](screenshots/login.png)
+![Dashboard](screenshots/dashboard.png)
+![Coach](screenshots/coach.png)
+![Insights](screenshots/insights.png)
 
-screenshots/
-
-login.png
-
-dashboard.png
-
-coach.png
-
-insights.png
 
 # 📈 Future Enhancements
 
