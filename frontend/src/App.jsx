@@ -4,6 +4,8 @@ import LoginPage from './pages/LoginPage.jsx';
 import medicineLogService from './services/medicineLogService.js';
 import medicineService from './services/medicineService.js';
 import waterService from './services/waterService.js';
+import aiService from './services/aiService.js';
+import MarkdownText from './components/MarkdownText.jsx';
 import { getLocalDate, toTwentyFourHourTime } from './utils/dateUtils.js';
 
 const GOALS = { water: 8, meals: 3 };
@@ -138,25 +140,53 @@ function Today({ st, onAddMedicine, onQuickLog, onToggleMedicine, user }) {
   );
 }
 
-function Coach({ st }) {
-  const [msgs, setMsgs] = useState([{ s: 'aura', t: "Hi, I'm Aura. I've been keeping an eye on your week — how are you feeling today?" }]);
+function Coach() {
+  const [msgs, setMsgs] = useState([]);
   const [input, setInput] = useState('');
   const [typ, setTyp] = useState(false);
+  const [chatError, setChatError] = useState('');
   const ref = useRef();
+  const welcomeRequested = useRef(false);
 
   useEffect(() => ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: 'smooth' }), [msgs, typ]);
 
-  const send = (event) => {
+  useEffect(() => {
+    if (welcomeRequested.current) return;
+    welcomeRequested.current = true;
+    let active = true;
+
+    const loadWelcome = async () => {
+      setTyp(true);
+      try {
+        const data = await aiService.chat('Generate today’s personalized welcome message.');
+        if (active) setMsgs([{ s: 'aura', t: data.reply }]);
+      } catch {
+        if (active) setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
+      } finally {
+        if (active) setTyp(false);
+      }
+    };
+
+    loadWelcome();
+    return () => { active = false; };
+  }, []);
+
+  const send = async (event) => {
     event.preventDefault();
     if (!input.trim()) return;
-    setMsgs((messages) => [...messages, { s: 'user', t: input }]);
+    const message = input.trim();
+    setMsgs((messages) => [...messages, { s: 'user', t: message }]);
     setInput('');
+    setChatError('');
     setTyp(true);
-    setTimeout(() => {
-      const pend = st.meds.find((medicine) => !medicine.taken);
-      setMsgs((messages) => [...messages, { s: 'aura', t: pend ? `You're at ${st.water}/${GOALS.water} glasses today. ${pend.name} isn't logged yet — want a reminder?` : `Nice — you're at ${st.water}/${GOALS.water} glasses today and meds are logged. Keep it up.` }]);
+    try {
+      const data = await aiService.chat(message);
+      setMsgs((messages) => [...messages, { s: 'aura', t: data.reply }]);
+    } catch {
+      setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
+    } finally {
       setTyp(false);
-    }, 900);
+    }
   };
 
   const Avatar = () => <div className="relative w-7 h-7 shrink-0"><div className="aura-glow absolute inset-0 rounded-full"></div><div className="absolute inset-[2px] rounded-full bg-white flex items-center justify-center text-[10px] font-bold text-[#14543F]">A</div></div>;
@@ -167,14 +197,15 @@ function Coach({ st }) {
         {msgs.map((message, index) => (
           <div key={index} className={`flex items-end gap-2 ${message.s === 'user' ? 'justify-end' : 'justify-start'}`}>
             {message.s === 'aura' && <Avatar />}
-            <div className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm ${message.s === 'user' ? 'bg-[#16302B] text-white rounded-br-sm' : 'bg-white border border-black/5 rounded-bl-sm shadow-sm'}`}>{message.t}</div>
+            <div className={`max-w-[75%] rounded-2xl px-3.5 py-2.5 text-sm ${message.s === 'user' ? 'bg-[#16302B] text-white rounded-br-sm' : 'bg-white border border-black/5 rounded-bl-sm shadow-sm'}`}><MarkdownText content={message.t} /></div>
           </div>
         ))}
         {typ && <div className="flex items-center gap-2"><Avatar /><div className="bg-white border border-black/5 rounded-2xl rounded-bl-sm px-3.5 py-2.5 text-sm text-[#16302B]/40">Aura is typing…</div></div>}
+        {chatError && <p className="text-sm text-[#F0784A]">{chatError}</p>}
       </div>
       <form onSubmit={send} className="flex gap-2 px-5 py-4 border-t border-black/5 bg-[#F6F8F3]">
-        <input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Ask Aura…" className="flex-1 rounded-full border border-black/10 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F7A63]/30" />
-        <button className="tap rounded-full bg-[#16302B] text-white px-5 text-sm font-semibold">Send</button>
+        <textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} rows="1" placeholder="Ask Aura…" className="flex-1 resize-none rounded-full border border-black/10 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F7A63]/30" />
+        <button disabled={typ} className="tap rounded-full bg-[#16302B] text-white px-5 text-sm font-semibold disabled:opacity-60">Send</button>
       </form>
     </div>
   );
@@ -328,7 +359,7 @@ export default function App() {
       </div>
       <div className="flex-1 flex flex-col overflow-hidden mt-1">
         {tab === 'today' && <Today st={st} onAddMedicine={handleAddMedicine} onQuickLog={handleQuickLog} onToggleMedicine={handleToggleMedicine} user={user} />}
-        {tab === 'coach' && <Coach st={st} />}
+        {tab === 'coach' && <Coach />}
         {tab === 'insights' && <Insights st={st} />}
       </div>
     </div>
