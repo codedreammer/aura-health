@@ -6,6 +6,8 @@ import medicineService from './services/medicineService.js';
 import waterService from './services/waterService.js';
 import aiService from './services/aiService.js';
 import MarkdownText from './components/MarkdownText.jsx';
+import NotificationPanel from './components/NotificationPanel.jsx';
+import useNotifications from './hooks/useNotifications.js';
 import { getLocalDate, toTwentyFourHourTime } from './utils/dateUtils.js';
 
 const GOALS = { water: 8, meals: 3 };
@@ -15,6 +17,7 @@ const EMPTY_STATE = {
   meals: 0,
   meds: [],
   streak: 0,
+  loaded: false,
   insights: { water: Array(7).fill(0), adherence: Array(7).fill(0), days: [] },
 };
 
@@ -284,6 +287,14 @@ export default function App() {
   const { user, isAuthenticated, loading } = useAuth();
   const [tab, setTab] = useState('today');
   const [st, setSt] = useState(EMPTY_STATE);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    clearAll,
+  } = useNotifications({ user, water: st.water, medicines: st.meds, ready: st.loaded });
 
   const refreshDashboard = useCallback(async () => {
     const [medicinesData, todayLogsData, todayWaterData, waterHistoryData, medicineHistoryData] = await Promise.all([
@@ -310,6 +321,7 @@ export default function App() {
       ...previous,
       water: Math.round((todayWaterData.totalWater || 0) / WATER_GLASS_ML),
       meds,
+      loaded: true,
       // TODO: The current backend does not expose a meals or streak endpoint.
       insights: buildInsights(waterHistoryData.waterLogs || [], medicineHistoryData.medicineLogs || []),
     }));
@@ -384,9 +396,9 @@ export default function App() {
   }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-[#F6F8F3] shadow-2xl flex flex-col">
+    <div className="relative max-w-md mx-auto min-h-screen bg-[#F6F8F3] shadow-2xl flex flex-col">
       <svg width="0" height="0" className="absolute" aria-hidden="true"><defs><linearGradient id="aura" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#1F7A63" /><stop offset="55%" stopColor="#E8B84B" /><stop offset="100%" stopColor="#F0784A" /></linearGradient></defs></svg>
-      <div className="flex items-center gap-2 px-5 pt-5"><div className="relative w-6 h-6"><div className="aura-glow absolute inset-0 rounded-full" /><div className="absolute inset-[2px] rounded-full bg-[#F6F8F3]" /></div><span className="font-display italic text-sm tracking-wide">Aura Health</span></div>
+      <div className="flex items-center gap-2 px-5 pt-5"><div className="relative w-6 h-6"><div className="aura-glow absolute inset-0 rounded-full" /><div className="absolute inset-[2px] rounded-full bg-[#F6F8F3]" /></div><span className="font-display italic text-sm tracking-wide">Aura Health</span><div className="relative ml-auto"><button onClick={() => setShowNotifications((show) => !show)} aria-label="Open Aura notifications" aria-expanded={showNotifications} className="tap relative flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-black/5 text-[#14543F]"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M10 21h4" /></svg>{unreadCount > 0 && <span className="absolute -right-0.5 -top-0.5 min-w-4 rounded-full bg-[#F0784A] px-1 text-center text-[9px] font-bold leading-4 text-white">{unreadCount > 9 ? '9+' : unreadCount}</span>}</button>{showNotifications && <NotificationPanel notifications={notifications} onMarkAsRead={markAsRead} onMarkAllAsRead={markAllAsRead} onClearAll={clearAll} />}</div></div>
       <div className="flex bg-[#DCEEE7] rounded-full p-1 mx-5 mt-4">
         {['today', 'coach', 'insights'].map((currentTab) => <button key={currentTab} onClick={() => setTab(currentTab)} className={`tap flex-1 py-2 rounded-full text-sm font-semibold capitalize transition-colors ${tab === currentTab ? 'bg-white text-[#14543F] shadow-sm' : 'text-[#14543F]/60'}`}>{currentTab}</button>)}
       </div>
