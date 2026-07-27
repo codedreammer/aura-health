@@ -1,5 +1,6 @@
 import Medicine from '../models/Medicine.js';
 import MedicineLog from '../models/MedicineLog.js';
+import { checkDailyCompletion, ensureTodayLogsForUser, checkAndTriggerOverdueNotifications } from './careCircleController.js';
 
 export const createMedicineLog = async (req, res) => {
   try {
@@ -81,6 +82,9 @@ export const markMedicineTaken = async (req, res) => {
     medicineLog.status = 'Taken';
     medicineLog.takenAt = new Date();
     await medicineLog.save();
+
+    // Trigger daily completion check
+    checkDailyCompletion(req.user._id, req.user.fullName).catch(console.error);
 
     return res.status(200).json({
       success: true,

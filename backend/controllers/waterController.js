@@ -1,4 +1,5 @@
 import WaterLog from '../models/WaterLog.js';
+import { checkDailyCompletion } from './careCircleController.js';
 
 export const addWaterLog = async (req, res) => {
   try {
@@ -7,6 +8,9 @@ export const addWaterLog = async (req, res) => {
       ...waterLogData,
       userId: req.user._id,
     });
+
+    // Trigger daily completion check
+    checkDailyCompletion(req.user._id, req.user.fullName).catch(console.error);
 
     return res.status(201).json({
       success: true,

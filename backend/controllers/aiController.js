@@ -2,6 +2,7 @@ import Medicine from '../models/Medicine.js';
 import MedicineLog from '../models/MedicineLog.js';
 import WaterLog from '../models/WaterLog.js';
 import { generateCoachReply } from '../services/geminiService.js';
+import { triggerEmergencyAlert } from './careCircleController.js';
 
 const getTodayRange = () => {
   const start = new Date();
@@ -58,7 +59,7 @@ export const chatWithCoach = async (req, res) => {
     const medicineSummary = `${pendingMedicines.length} medicine${pendingMedicines.length === 1 ? '' : 's'} pending; ${takenLogs} of ${medicineLogs.length} scheduled doses marked taken.`;
     const healthSummary = `Medicine adherence today: ${adherence}%. Hydration progress: ${waterGlasses} of 8 glasses.`;
 
-    const reply = await generateCoachReply({
+    let reply = await generateCoachReply({
       userName: req.user.fullName,
       waterAmount,
       waterGlasses,
@@ -69,6 +70,12 @@ export const chatWithCoach = async (req, res) => {
       healthSummary,
       message: message.trim(),
     });
+
+    if (reply.startsWith('[Intent: Emergency]')) {
+      reply = reply.replace('[Intent: Emergency]', '').trim();
+      // Fire simulated emergency alert to Care Circle contacts
+      await triggerEmergencyAlert(req.user._id, req.user.fullName, message.trim());
+    }
 
     return res.status(200).json({
       success: true,

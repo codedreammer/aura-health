@@ -8,6 +8,7 @@ import medicineRoutes from './routes/medicineRoutes.js';
 import medicineLogRoutes from './routes/medicineLogRoutes.js';
 import waterRoutes from './routes/waterRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import careCircleRoutes from './routes/careCircleRoutes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/medicines', medicineRoutes);
 app.use('/api/medicine-logs', medicineLogRoutes);
 app.use('/api/water', waterRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/care-circle', careCircleRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
