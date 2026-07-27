@@ -56,7 +56,7 @@ Developed as part of the **IIT Jammu Hackathon**, Aura Health combines **AI, hea
 
 ## Frontend
 
-[live](https://aura-health-f1hu0n0jj-akshay-anands-projects-cf891d53.vercel.app/)
+[live]([https://aura-health-f1hu0n0jj-akshay-anands-projects-cf891d53.vercel.app/](https://aura-health-nine.vercel.app/))
 
 ## Backend API
 
