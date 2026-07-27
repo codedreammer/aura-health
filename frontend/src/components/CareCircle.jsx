@@ -39,7 +39,26 @@ export default function CareCircle() {
   };
 
   useEffect(() => {
-    loadData();
+    let active = true;
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [contactsData, logsData] = await Promise.all([
+          careCircleService.getContacts(),
+          careCircleService.getNotificationLogs(),
+        ]);
+        if (active) {
+          setContacts(contactsData.contacts || []);
+          setLogs(logsData.logs || []);
+        }
+      } catch (error) {
+        console.error('Failed to load Care Circle data:', error);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+    fetchData();
+    return () => { active = false; };
   }, []);
 
   const resetForm = () => {

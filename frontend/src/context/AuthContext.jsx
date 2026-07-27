@@ -35,24 +35,27 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    let active = true;
     const hydrateSession = async () => {
       if (!token) {
-        setLoading(false);
+        if (active) setLoading(false);
         return;
       }
 
       try {
         const data = await userService.getProfile();
+        if (!active) return;
         localStorage.setItem(USER_KEY, JSON.stringify(data.user));
         setUser(data.user);
       } catch {
-        logout();
+        if (active) logout();
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
 
     hydrateSession();
+    return () => { active = false; };
   }, [token]);
 
   const value = useMemo(() => ({

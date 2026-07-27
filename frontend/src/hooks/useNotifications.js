@@ -48,30 +48,45 @@ export default function useNotifications({ user, water, medicines, ready }) {
     localStorage.setItem(storageKey, JSON.stringify(notificationMap));
   }, [notificationMap, storageKey]);
 
+  const tipId = `aura-tip-${getLocalDate()}`;
+  const hasTip = Boolean(notificationMap[tipId]);
+
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || hasTip || requestedTipIds.current.has(tipId)) return;
 
-    const tipId = `aura-tip-${getLocalDate()}`;
-    if (notificationMap[tipId] || requestedTipIds.current.has(tipId)) return;
-
+    let active = true;
     requestedTipIds.current.add(tipId);
-    aiService.chat('Create one concise, personalized Aura Tip of the Day from today’s health snapshot. Use one encouraging sentence and no greeting.').then((data) => {
-      setNotificationMap((current) => ({
-        ...current,
-        [tipId]: {
-          id: tipId,
-          title: 'Aura Tip of the Day',
-          body: data.reply,
-          type: 'tip',
-          createdAt: new Date().toISOString(),
-          read: false,
-          dismissed: false,
-        },
-      }));
-    }).catch(() => {
+
+    const fetchTip = async () => {
+      try {
+        const data = await aiService.chat('Create one concise, personalized Aura Tip of the Day from today health snapshot. Use one encouraging sentence and no greeting.');
+        if (!active || typeof data?.reply !== 'string' || !data.reply.trim()) return;
+
+        setNotificationMap((current) => ({
+          ...current,
+          [tipId]: {
+            id: tipId,
+            title: 'Aura Tip of the Day',
+            body: data.reply,
+            type: 'tip',
+            createdAt: new Date().toISOString(),
+            read: false,
+            dismissed: false,
+          },
+        }));
+      } catch {
+        // Tips are optional; a failed request must not affect the dashboard.
+      } finally {
+        requestedTipIds.current.delete(tipId);
+      }
+    };
+
+    fetchTip();
+    return () => {
+      active = false;
       requestedTipIds.current.delete(tipId);
-    });
-  }, [notificationMap, ready]);
+    };
+  }, [hasTip, ready, tipId]);
 
   const notifications = Object.values(notificationMap)
     .filter((notification) => !notification.dismissed)

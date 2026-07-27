@@ -150,13 +150,22 @@ function Coach() {
   const [typ, setTyp] = useState(false);
   const [chatError, setChatError] = useState('');
   const ref = useRef();
-  const welcomeRequested = useRef(false);
+  const isMounted = useRef(false);
+  const welcomeRequestId = useRef(0);
 
   useEffect(() => ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: 'smooth' }), [msgs, typ]);
 
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const sendMessage = async (messageText) => {
-    if (!messageText.trim()) return;
-    setMsgs((messages) => [...messages, { s: 'user', t: messageText }]);
+    const trimmedMessage = messageText?.trim();
+    if (!trimmedMessage || typ) return;
+    setMsgs((messages) => [...messages, { s: 'user', t: trimmedMessage }]);
     setInput('');
     setChatError('');
     setTyp(true);
@@ -166,33 +175,38 @@ function Coach() {
         .map((m) => `${m.s === 'user' ? 'User' : 'Aura'}: ${m.t}`)
         .join('\n');
       const formattedMessage = recentHistory
-        ? `[Previous Conversation History for context]\n${recentHistory}\n\nUser Question: ${messageText}`
-        : messageText;
+        ? `[Previous Conversation History for context]\n${recentHistory}\n\nUser Question: ${trimmedMessage}`
+        : trimmedMessage;
 
       const data = await aiService.chat(formattedMessage);
-      setMsgs((messages) => [...messages, { s: 'aura', t: data.reply }]);
+      if (typeof data?.reply !== 'string' || !data.reply.trim()) {
+        throw new Error('The AI service returned an invalid response.');
+      }
+      if (isMounted.current) setMsgs((messages) => [...messages, { s: 'aura', t: data.reply }]);
     } catch {
-      setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
+      if (isMounted.current) setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
     } finally {
-      setTyp(false);
+      if (isMounted.current) setTyp(false);
     }
   };
 
   useEffect(() => {
-    if (welcomeRequested.current) return;
-    welcomeRequested.current = true;
     let active = true;
+    const requestId = ++welcomeRequestId.current;
 
     const loadWelcome = async () => {
       setTyp(true);
       try {
         const localHour = new Date().getHours();
         const data = await aiService.chat(`Generate today’s personalized welcome message. (Time of day context: local hour is ${localHour})`);
-        if (active) setMsgs([{ s: 'aura', t: data.reply }]);
+        if (typeof data?.reply !== 'string' || !data.reply.trim()) {
+          throw new Error('The AI service returned an invalid response.');
+        }
+        if (active && requestId === welcomeRequestId.current) setMsgs([{ s: 'aura', t: data.reply }]);
       } catch {
-        if (active) setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
+        if (active && requestId === welcomeRequestId.current) setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
       } finally {
-        if (active) setTyp(false);
+        if (active && requestId === welcomeRequestId.current) setTyp(false);
       }
     };
 
@@ -331,9 +345,15 @@ export default function App() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    refreshDashboard().catch((error) => {
-      console.error('Failed to load dashboard data:', error);
-    });
+    const fetchDashboard = async () => {
+      try {
+        await refreshDashboard();
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      }
+    };
+
+    fetchDashboard();
   }, [isAuthenticated, refreshDashboard]);
 
   const handleQuickLog = async (key) => {
