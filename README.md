@@ -1,35 +1,90 @@
-# 🌿 Aura Health – AI Powered Wellness Companion
+# 🌿 Aura Health – AI-Powered Wellness Companion
 
 <p align="center">
-  <img src="https://img.shields.io/badge/MERN-Full%20Stack-green" />
-  <img src="https://img.shields.io/badge/AI-Google%20Gemini-blue" />
-  <img src="https://img.shields.io/badge/Database-MongoDB-success" />
-  <img src="https://img.shields.io/badge/Authentication-JWT-orange" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow" />
+
+![MERN](https://img.shields.io/badge/MERN-Full%20Stack-3FA037?style=for-the-badge)
+![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-success?style=for-the-badge)
+![Gemini AI](https://img.shields.io/badge/Google-Gemini%20AI-4285F4?style=for-the-badge)
+![JWT](https://img.shields.io/badge/JWT-Authentication-orange?style=for-the-badge)
+![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?style=for-the-badge)
+![Render](https://img.shields.io/badge/Backend-Render-46E3B7?style=for-the-badge)
+
 </p>
 
-Aura Health is an **AI-powered wellness companion** built using the **MERN Stack** with **Google Gemini AI** integration. The application helps users monitor hydration, manage medications, track daily health habits, and receive personalized AI-driven wellness guidance through an intelligent virtual health coach.
+---
+
+# 🌟 Overview
+
+Aura Health is an **AI-powered wellness companion** built using the **MERN Stack** and **Google Gemini AI**.
+
+The application helps users develop healthy habits by tracking hydration, managing medications, monitoring wellness progress, and interacting with an intelligent AI health coach.
+
+Aura Health also introduces **Care Circle**, allowing trusted family members or caregivers to receive wellness updates and emergency alerts, making healthcare more connected and supportive.
+
+Developed as part of the **IIT Jammu Hackathon**, Aura Health combines **AI, health tracking, and digital caregiving** into one seamless platform.
+
+---
+
+# 🏆 Hackathon Highlights
+
+✅ AI Wellness Coach powered by Google Gemini
+
+✅ JWT Authentication
+
+✅ Water Intake Tracking
+
+✅ Medicine Reminder System
+
+✅ Personalized Health Dashboard
+
+✅ Care Circle for Trusted Contacts
+
+✅ Emergency Detection & Escalation
+
+✅ Notification Simulation
+
+✅ Responsive Mobile-first UI
+
+✅ MERN Stack Architecture
+
+✅ Cloud Deployment (Vercel + Render)
+
+---
+
+# 🚀 Live Demo
+
+## Frontend
+
+https://your-vercel-url.vercel.app
+
+## Backend API
+
+https://aura-health-bpz8.onrender.com
 
 ---
 
 # ✨ Features
 
-## 👤 User Authentication
+---
+
+## 🔐 User Authentication
 
 - Secure JWT Authentication
 - User Registration
 - User Login
 - Protected Routes
-- Persistent Login Session
+- Persistent Login Sessions
 
 ---
 
 ## 💧 Water Tracking
 
 - Log daily water intake
-- View today's progress
-- Daily hydration statistics
-- Hydration summary
+- Daily hydration goal
+- Water history
+- Hydration progress
+- Daily hydration insights
 
 ---
 
@@ -40,50 +95,144 @@ Aura Health is an **AI-powered wellness companion** built using the **MERN Stack
 - Delete medicines
 - Active/Inactive medicines
 - Reminder schedules
+- Daily medicine overview
 
 ---
 
 ## ✅ Medicine Logs
 
 - Mark medicines as taken
-- View today's medicine history
-- Track adherence
+- View today's medicine logs
+- Medicine adherence tracking
+- History tracking
 
 ---
 
-## 📊 Health Insights
+## 📊 Health Dashboard
 
-- Daily wellness summary
-- Hydration insights
+Provides a complete daily health summary including:
+
+- Water intake
 - Medicine adherence
-- Progress dashboard
+- Daily progress
+- Health insights
+- Wellness statistics
 
 ---
 
-## 🤖 Aura AI Coach
+# 🤖 Aura AI Coach
 
 Powered by **Google Gemini AI**
 
-Features:
+Aura acts as an intelligent wellness companion rather than simply answering questions.
+
+### Features
 
 - Personalized health coaching
-- Hydration reminders
-- Medicine reminders
-- Daily health summary
-- Wellness motivation
-- Context-aware conversations
-- Safe AI responses
-- Markdown message support
+- Hydration guidance
+- Medication guidance
+- Daily wellness summaries
+- Healthy habit recommendations
+- Motivational conversations
+- Context-aware responses
+- Markdown formatted replies
+- Friendly conversational interface
 
-The AI uses:
+The AI understands:
 
 - User profile
-- Today's water intake
+- Water intake
 - Active medicines
-- Pending medicines
 - Medicine logs
+- Daily progress
 
-to generate personalized responses.
+to generate personalized coaching responses.
+
+---
+
+# 🚨 Emergency Detection
+
+Aura AI can detect emergency situations during conversations.
+
+Examples include:
+
+- Chest pain
+- Difficulty breathing
+- Stroke symptoms
+- Severe bleeding
+- Suicidal thoughts
+
+When detected:
+
+- Displays emergency warning
+- Advises contacting emergency services
+- Triggers Care Circle alert simulation
+
+---
+
+# 👨‍👩‍👧 Care Circle
+
+Care Circle allows users to connect trusted contacts.
+
+### Features
+
+- Add trusted contacts
+- Edit contacts
+- Delete contacts
+- Relationship categories
+
+Examples:
+
+- Parent
+- Partner
+- Spouse
+- Family Member
+- Caregiver
+
+Each contact can independently receive:
+
+- Missed medicine reminders
+- Daily completion notifications
+- Weekly summaries
+- Emergency alerts
+
+---
+
+# 🔔 Notification Simulation
+
+Aura includes a complete notification simulator for demonstration purposes.
+
+Supported simulations:
+
+- Missed medicine reminder
+- Reminder escalation
+- Care Circle notifications
+- Email simulation
+- SMS simulation
+- Emergency notification logs
+
+Perfect for hackathon demonstrations.
+
+---
+
+# 🤖 AI Safety
+
+Aura Health is a **wellness assistant**, not a medical professional.
+
+Aura AI:
+
+- Encourages healthy habits
+- Promotes hydration
+- Encourages medicine adherence
+- Motivates users
+- Provides wellness suggestions
+
+Aura AI **does NOT**:
+
+- Diagnose diseases
+- Prescribe medication
+- Recommend dosages
+- Replace professional medical advice
 
 ---
 
@@ -96,6 +245,7 @@ to generate personalized responses.
 - Tailwind CSS
 - Axios
 - Context API
+- React Hooks
 
 ---
 
@@ -103,7 +253,7 @@ to generate personalized responses.
 
 - Node.js
 - Express.js
-- MongoDB
+- MongoDB Atlas
 - Mongoose
 - JWT Authentication
 - bcryptjs
@@ -119,30 +269,38 @@ to generate personalized responses.
 
 ## Database
 
-- MongoDB Atlas
+MongoDB Atlas
+
+Collections include:
+
+- Users
+- Medicines
+- Medicine Logs
+- Water Logs
+- Care Circle Contacts
+- Notification Logs
 
 ---
 
 # 📁 Project Structure
 
-```
+```text
 Aura-Health
-│
+
 ├── frontend
 │   ├── public
 │   ├── src
-│   │   ├── assets
-│   │   ├── components
-│   │   ├── constants
-│   │   ├── context
-│   │   ├── hooks
-│   │   ├── layouts
-│   │   ├── pages
-│   │   ├── services
-│   │   ├── utils
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   └── package.json
+│   │
+│   ├── components
+│   ├── constants
+│   ├── context
+│   ├── hooks
+│   ├── layouts
+│   ├── pages
+│   ├── services
+│   ├── utils
+│   ├── App.jsx
+│   └── main.jsx
 │
 └── backend
     ├── config
@@ -153,14 +311,13 @@ Aura-Health
     ├── services
     ├── utils
     ├── server.js
-    └── package.json
 ```
 
 ---
 
 # 🚀 Installation
 
-## 1. Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/codedreammer/aura-health.git
@@ -170,7 +327,7 @@ cd aura-health
 
 ---
 
-## 2. Install Frontend
+## Install Frontend
 
 ```bash
 cd frontend
@@ -180,7 +337,7 @@ npm install
 
 ---
 
-## 3. Install Backend
+## Install Backend
 
 ```bash
 cd ../backend
@@ -192,7 +349,7 @@ npm install
 
 # ⚙ Environment Variables
 
-Create a `.env` file inside the **backend** directory.
+Backend
 
 ```env
 PORT=5000
@@ -204,6 +361,14 @@ JWT_SECRET=your_jwt_secret
 GEMINI_API_KEY=your_google_gemini_api_key
 
 GEMINI_MODEL=gemini-3.6-flash
+
+CLIENT_URL=http://localhost:5173
+```
+
+Frontend
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
 ---
@@ -236,26 +401,24 @@ npm run dev
 
 ---
 
-Frontend:
+# 🌐 Deployment
 
-```
-http://localhost:5173
-```
+## Frontend
 
-Backend:
+- Vercel
 
-```
-http://localhost:5000
-```
+## Backend
+
+- Render
 
 ---
 
-# 🔐 API Endpoints
+# 🔗 API Endpoints
 
 ## Authentication
 
 | Method | Endpoint |
-|---------|----------|
+|----------|-----------|
 | POST | /api/auth/register |
 | POST | /api/auth/login |
 
@@ -264,16 +427,27 @@ http://localhost:5000
 ## Users
 
 | Method | Endpoint |
-|---------|----------|
+|----------|-----------|
 | GET | /api/users/profile |
 | PUT | /api/users/profile |
+
+---
+
+## Water
+
+| Method | Endpoint |
+|----------|-----------|
+| GET | /api/water/today |
+| GET | /api/water/history |
+| POST | /api/water |
+| DELETE | /api/water/:id |
 
 ---
 
 ## Medicines
 
 | Method | Endpoint |
-|---------|----------|
+|----------|-----------|
 | GET | /api/medicines |
 | POST | /api/medicines |
 | PUT | /api/medicines/:id |
@@ -284,49 +458,33 @@ http://localhost:5000
 ## Medicine Logs
 
 | Method | Endpoint |
-|---------|----------|
-| GET | /api/medicine-logs |
+|----------|-----------|
+| GET | /api/medicine-logs/today |
+| GET | /api/medicine-logs/history |
 | POST | /api/medicine-logs |
-| DELETE | /api/medicine-logs/:id |
-
----
-
-## Water
-
-| Method | Endpoint |
-|---------|----------|
-| GET | /api/water/today |
-| POST | /api/water |
-| DELETE | /api/water/:id |
+| PUT | /api/medicine-logs/:id |
 
 ---
 
 ## AI Coach
 
 | Method | Endpoint |
-|---------|----------|
+|----------|-----------|
 | POST | /api/ai/chat |
 
 ---
 
-# 🤖 AI Safety
+## Care Circle
 
-Aura Health Coach is designed as a **wellness assistant**, **not a medical professional**.
-
-The AI:
-
-- Encourages healthy habits
-- Promotes hydration
-- Encourages medication adherence
-- Motivates users
-- Provides wellness suggestions
-
-The AI does **not**:
-
-- Diagnose diseases
-- Prescribe medication
-- Recommend dosage
-- Replace professional healthcare advice
+| Method | Endpoint |
+|----------|-----------|
+| GET | /api/care-circle |
+| POST | /api/care-circle |
+| PUT | /api/care-circle/:id |
+| DELETE | /api/care-circle/:id |
+| GET | /api/care-circle/logs |
+| DELETE | /api/care-circle/logs |
+| POST | /api/care-circle/simulate |
 
 ---
 
@@ -340,19 +498,28 @@ The AI does **not**:
 # 📈 Future Enhancements
 
 - Push Notifications
-- Medicine Reminder Notifications
-- Wearable Device Integration
-- PDF Health Reports
-- Health Score
-- AI Weekly Wellness Reports
-- Multi-language Support
+- Twilio SMS Integration
+- Email Integration
+- Firebase Cloud Messaging
 - Voice-enabled AI Coach
+- Wearable Device Integration
+- AI Weekly Wellness Reports
+- Smart Health Score
+- PDF Health Reports
+- Calendar Integration
+- Multi-language Support
 
 ---
 
 # 👨‍💻 Team
 
 Developed as part of the **IIT Jammu Hackathon**.
+
+Akshay Anand
+
+Abhishek Kumar
+
+Abhishek Yadav
 
 ---
 
@@ -364,13 +531,13 @@ This project is licensed under the MIT License.
 
 # ⭐ Support
 
-If you found this project useful,
+If you found this project useful:
 
 ⭐ Star the repository
 
 🍴 Fork the project
 
-📢 Share your feedback
+💬 Share your feedback
 
 ---
 
@@ -383,9 +550,11 @@ If you found this project useful,
 - Express.js
 - Tailwind CSS
 - Vite
+- Render
+- Vercel
 
 ---
 
-## 🌟 Aura Health
+# 🌿 Aura Health
 
-> **"Track Better. Live Healthier. Powered by AI."**
+> **"Track Better. Live Healthier. Stay Connected. Powered by AI."**
