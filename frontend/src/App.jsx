@@ -150,6 +150,30 @@ function Coach() {
 
   useEffect(() => ref.current?.scrollTo({ top: ref.current.scrollHeight, behavior: 'smooth' }), [msgs, typ]);
 
+  const sendMessage = async (messageText) => {
+    if (!messageText.trim()) return;
+    setMsgs((messages) => [...messages, { s: 'user', t: messageText }]);
+    setInput('');
+    setChatError('');
+    setTyp(true);
+    try {
+      const recentHistory = msgs
+        .slice(-4)
+        .map((m) => `${m.s === 'user' ? 'User' : 'Aura'}: ${m.t}`)
+        .join('\n');
+      const formattedMessage = recentHistory
+        ? `[Previous Conversation History for context]\n${recentHistory}\n\nUser Question: ${messageText}`
+        : messageText;
+
+      const data = await aiService.chat(formattedMessage);
+      setMsgs((messages) => [...messages, { s: 'aura', t: data.reply }]);
+    } catch {
+      setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
+    } finally {
+      setTyp(false);
+    }
+  };
+
   useEffect(() => {
     if (welcomeRequested.current) return;
     welcomeRequested.current = true;
@@ -158,7 +182,8 @@ function Coach() {
     const loadWelcome = async () => {
       setTyp(true);
       try {
-        const data = await aiService.chat('Generate today’s personalized welcome message.');
+        const localHour = new Date().getHours();
+        const data = await aiService.chat(`Generate today’s personalized welcome message. (Time of day context: local hour is ${localHour})`);
         if (active) setMsgs([{ s: 'aura', t: data.reply }]);
       } catch {
         if (active) setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
@@ -171,22 +196,9 @@ function Coach() {
     return () => { active = false; };
   }, []);
 
-  const send = async (event) => {
+  const send = (event) => {
     event.preventDefault();
-    if (!input.trim()) return;
-    const message = input.trim();
-    setMsgs((messages) => [...messages, { s: 'user', t: message }]);
-    setInput('');
-    setChatError('');
-    setTyp(true);
-    try {
-      const data = await aiService.chat(message);
-      setMsgs((messages) => [...messages, { s: 'aura', t: data.reply }]);
-    } catch {
-      setChatError("I'm having trouble reaching my AI services right now. Please try again in a moment.");
-    } finally {
-      setTyp(false);
-    }
+    sendMessage(input);
   };
 
   const Avatar = () => <div className="relative w-7 h-7 shrink-0"><div className="aura-glow absolute inset-0 rounded-full"></div><div className="absolute inset-[2px] rounded-full bg-white flex items-center justify-center text-[10px] font-bold text-[#14543F]">A</div></div>;
@@ -202,6 +214,27 @@ function Coach() {
         ))}
         {typ && <div className="flex items-center gap-2"><Avatar /><div className="bg-white border border-black/5 rounded-2xl rounded-bl-sm px-3.5 py-2.5 text-sm text-[#16302B]/40">Aura is typing…</div></div>}
         {chatError && <p className="text-sm text-[#F0784A]">{chatError}</p>}
+        {msgs.length === 0 && !typ && (
+          <div className="space-y-2 mt-4">
+            <p className="text-[10px] font-bold text-[#16302B]/45 uppercase tracking-wider">Conversation Starters</p>
+            <div className="flex flex-col gap-2">
+              {[
+                "Summarize my wellness progress today 📊",
+                "I'm feeling a bit tired or sluggish today 🥱",
+                "How can I build better hydration habits? 💧",
+                "I missed a medicine dosage, what should I do? 💊"
+              ].map((starter) => (
+                <button
+                  key={starter}
+                  onClick={() => sendMessage(starter)}
+                  className="tap text-left text-xs bg-white border border-black/5 rounded-xl p-3 shadow-sm hover:border-[#1F7A63]/30 transition-colors text-[#16302B]"
+                >
+                  {starter}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       <form onSubmit={send} className="flex gap-2 px-5 py-4 border-t border-black/5 bg-[#F6F8F3]">
         <textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); } }} rows="1" placeholder="Ask Aura…" className="flex-1 resize-none rounded-full border border-black/10 bg-white px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#1F7A63]/30" />
